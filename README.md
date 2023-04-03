@@ -1,1 +1,1 @@
-# recepit_generator
+recipe_generator
