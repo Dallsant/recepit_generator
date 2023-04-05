@@ -1,7 +1,5 @@
-from typing import Optional
-
 from fastapi import APIRouter, Depends, Query
-
+from recipe.recipe_models import RecipeGenerationParams
 from recipe.recipe_service import RecipeService
 
 router = APIRouter(
@@ -9,8 +7,7 @@ router = APIRouter(
     tags=["recipe"]
 )
 
-@router.get("/")
-async def callback():
+@router.post("/")
+async def create_recipe(params: RecipeGenerationParams):
     recipe_service = RecipeService()
-
-    return recipe_service.generate_recipe(["broccoli", "butter", "cheese"])
+    return recipe_service.generate_recipe(params)
