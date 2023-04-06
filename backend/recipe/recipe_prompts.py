@@ -26,7 +26,5 @@ transfer to a lined cookie sheet.","Leave at room temperature until set.","you d
 you want the extra flavor."]}},}} parameters = {RecipeGenerationPrompValue.params}
 OUTPUT:  """
 
-print(starting_prompt)
-
 recipe_generation_prompt = starting_prompt.replace(RecipeGenerationPrompValue.example_params,
                                                    get_example_params())
