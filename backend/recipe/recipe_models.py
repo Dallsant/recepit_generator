@@ -1,15 +1,20 @@
-from typing import Any, List, Optional
+from typing import List, Optional
 from pydantic import BaseModel
 from enum import Enum
+from odmantic import EmbeddedModel, Model, Field
+from datetime import datetime
 
-class SupportedLanguages(str, Enum)
+
+class SupportedLanguages(str, Enum):
     spanish = "Spanish"
     english = "English"
     french = "French"
 
+
 class RecipeGenerationPrompValue(str, Enum):
     example_params = "[[EXAMPLE_PARAMETERS]]"
     params = "[[PARAMETERS]]"
+
 
 class RecipeGenerationParams(BaseModel):
     # Only use ingredients that appear on the ingredients list
@@ -28,4 +33,14 @@ class RecipeGenerationParams(BaseModel):
     amount_of_dishes: int = 3
 
 
+class Recipe(Model):
+    name: str
+    description: Optional[str] = None
+    ingredients: List[str] = []
+    directions: List[str] = []
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
 
+    class Config:
+        collection = "recipes"
+        parse_doc_with_default_factories = True
