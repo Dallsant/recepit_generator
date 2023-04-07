@@ -10,9 +10,10 @@ def get_example_params():
     ).dict())
 
 
-starting_prompt = f"""Given a list of ingredients, generate a list of recipes that includes their name, description, 
+starting_prompt = f"""Given a list of ingredients, generate an award winning list of recipes that includes their name, description, 
 a list of ingredients, and the directions on how to generate them in a VALID JSON format. If strict mode is enabled, 
-only use ingredients from the list. And structure the output based on the parameters given. IMPORTANT: Generate the 
+only use ingredients from the list. And structure the output based on the parameters given. Prioritize regional dishes, that exist. 
+IMPORTANT: Generate the 
 output on the language given in the output_language params, regardless of the language of the given ingredients  
 Example: parameters = {RecipeGenerationPrompValue.example_params} OUTPUT: {{"recipes": [{{
 "name":"REESE'S STUFFED OREOS","description":"Stuffed oreos with peanut butter filling", "ingredients": ["Double 

@@ -18,6 +18,11 @@ async def register(params:RegisterUserParams):
     return await auth_service.register(params.email, params.password)
 
 
+@router.post("/login")
+async def register(params:RegisterUserParams):
+    auth_service = AuthenticationService()
+    return await auth_service.login(params.email, params.password)
+
 @router.get("/")
 async def get_recipe():
     return await get_recipe_by_id("642dfc62445f892a26b27bdd")
