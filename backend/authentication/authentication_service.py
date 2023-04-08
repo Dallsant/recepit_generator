@@ -23,7 +23,7 @@ class AuthenticationService:
         pattern = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$"
         return True if re.match(pattern, password) else False
 
-    def generate_jwt_token(self, user: User) -> dict[str]:
+    def generate_jwt_token(self, user: User) -> dict:
         """
         Generates a JWT token for the given user
         :param user: the user to generate the token for
@@ -69,13 +69,14 @@ class AuthenticationService:
             raise UserAlreadyExistsException()
         if not self._validate_password(password):
             raise InvalidPasswordException()
+
         hashed_password = bcrypt.hashpw(password.encode('utf-8'), get_config().PASSWORD_HASH.encode('utf-8'))
 
         new_user = await db.save(User(email=email.lower(), hashed_password=hashed_password))
 
         return new_user.get_public_user()
 
-    async def login(self, email: str, password: str) -> dict[str]:
+    async def login(self, email: str, password: str) -> dict:
         """
         Logs in a user with the given email and password
         :param email: user email
@@ -90,11 +91,13 @@ class AuthenticationService:
 
         return self.generate_jwt_token(user)
 
-async def get_current_user(
+async def authenticate_request(
                            request: Request,
                            ) -> Union[None, User]:
     """
     Get current logged-in user from JWT token
+    :param request: current request
+    :return: User
     """
     token = request.headers.get("Authorization", None).replace("Bearer ", "")
     if not token:

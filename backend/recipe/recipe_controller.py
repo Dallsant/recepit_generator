@@ -1,21 +1,40 @@
+from typing import Union, List
+
 from fastapi import APIRouter, Depends, Query
-from recipe.recipe_models import RecipeGenerationParams
+
+from authentication.authentication_service import authenticate_request
+from recipe.recipe_models import RecipeGenerationParams, Recipe
 from recipe.recipe_repository import get_recipe_by_id
 from recipe.recipe_service import RecipeService
+from user.user_models import User
+from duckduckgo_search import ddg_images
 
 router = APIRouter(
-    prefix="/recipe",
-    tags=["recipe"]
+    prefix="/recipes",
+    tags=["recipes"]
 )
 
-@router.post("/")
-async def create_recipe(params: RecipeGenerationParams):
+@router.post("/generate")
+async def generate_recipes(params: RecipeGenerationParams)-> List[Recipe]:
+    """
+    Generates recipes
+    """
     recipe_service = RecipeService()
-    return recipe_service.generate_recipe(params)
+    return await recipe_service.generate_recipe(params)
 
 
-@router.get("/")
-async def get_recipe():
-    return await get_recipe_by_id("642dfc62445f892a26b27bdd")
+@router.get("/{recipe_id}")
+async def get_recipe(recipe_id: str) -> Recipe:
+    """
+    Get a recipe by Id
+    """
+    return await get_recipe_by_id(recipe_id)
 
 
+@router.post("/")
+async def save_recipes(recipes: Union[Recipe, List[Recipe]], user: User = Depends(authenticate_request),
+                      recipe_service: RecipeService = Depends()) -> List[Recipe]:
+    """
+    Save a list of recipes and links them to the current yser
+    """
+    return await recipe_service.save_recipes(recipes, user)

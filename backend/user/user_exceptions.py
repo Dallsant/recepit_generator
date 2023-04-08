@@ -8,3 +8,7 @@ class UserAlreadyExistsException(RootException):
 class InvalidPasswordException(RootException):
     def __init__(self):
         super().__init__("Invalid password", 401)
+
+class UserNotFoundException(RootException):
+    def __init__(self):
+        super().__init__("User not found", 401)
