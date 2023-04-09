@@ -55,6 +55,9 @@ class AuthenticationService:
         user_data = self.get_user_data(token)
         return await get_user_by_email(user_data.get('email'))
 
+    def hash_password(self, password:str):
+        return bcrypt.hashpw(password.encode('utf-8'), get_config().PASSWORD_HASH.encode('utf-8'))
+
     async def register(self, email: str, password: str) -> PublicUser:
         """
         Registers a new user with the given email and password
@@ -63,14 +66,14 @@ class AuthenticationService:
         :return: the registered user
         """
 
-        user = await get_user_by_email(email)
+        user = await get_user_by_email(email, raise_if_not_found=False)
 
         if user:
             raise UserAlreadyExistsException()
         if not self._validate_password(password):
             raise InvalidPasswordException()
 
-        hashed_password = bcrypt.hashpw(password.encode('utf-8'), get_config().PASSWORD_HASH.encode('utf-8'))
+        hashed_password = self.hash_password(password)
 
         new_user = await db.save(User(email=email.lower(), hashed_password=hashed_password))
 

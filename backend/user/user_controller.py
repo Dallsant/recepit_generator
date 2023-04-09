@@ -9,7 +9,7 @@ router = APIRouter(
 
 
 @router.post("/register")
-async def register(params:RegisterUserParams):
+async def register(params: RegisterUserParams):
     """
     Registers a new user
     """
@@ -18,10 +18,9 @@ async def register(params:RegisterUserParams):
 
 
 @router.post("/login")
-async def login(params:RegisterUserParams):
+async def login(params: RegisterUserParams):
     """
     Authenticates an user
     """
     auth_service = AuthenticationService()
     return await auth_service.login(params.email, params.password)
-

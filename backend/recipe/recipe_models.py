@@ -31,7 +31,7 @@ class RecipeGenerationParams(BaseModel):
     detailed_instructions: bool = False
 
     # Amount of dishes to generate
-    amount_of_dishes: int = 3
+    amount_of_recipes: int = 3
 
 
 class Recipe(Model):
