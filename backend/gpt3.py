@@ -1,6 +1,6 @@
 import openai
 
-def request_gpt3(self, prompt):
+def request_gpt3(prompt):
     return openai.Completion.create(
         model="text-davinci-003",
         prompt=prompt,

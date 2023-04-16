@@ -1,7 +1,7 @@
 from recipe.recipe_models import RecipeGenerationPrompValue, RecipeGenerationParams, SupportedLanguages
 
 
-def get_example_params(self) -> str:
+def get_example_params() -> str:
     """
     Returns an example of a RecipeGenerationParams object as a string
     :return: Recipe params as string

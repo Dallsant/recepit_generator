@@ -21,7 +21,7 @@ class RecipeService:
     def __init__(self):
         self.prompt = get_recipes_prompt()
 
-    async def fetch_image_from_recipe(self, recipe: Recipe) -> Recipe:
+    async def fetch_image_for_recipe(self, recipe: Recipe) -> Recipe:
         """
         Fetches an image for a given recipe
         :param recipe: recipe
@@ -41,7 +41,7 @@ class RecipeService:
         :return: recipes with linked images
         """
 
-        return await asyncio.gather(*[self.fetch_image_from_recipe(r) for r in recipes])
+        return await asyncio.gather(*[self.fetch_image_for_recipe(r) for r in recipes])
 
     def validate_ingredients_integrity(self, ingredients: Union[str, List[str]]) -> List[str]:
         """
@@ -102,10 +102,14 @@ class RecipeService:
             # Remove line-breaks as it breaks json formatting
             formatted_response = response.get('text').replace('\n', '')
 
-            recipes = [Recipe(**i) for i in json.loads(response).get('recipes')]
+            recipes = [Recipe(**i) for i in json.loads(formatted_response).get('recipes')]
             return await self.link_images_to_recipes(recipes)
+
+        except openai.InvalidRequestError as e:
+            logger.error(f"Openai request failed {e.error['message']}")
+            raise RecipeCreationException()
         except Exception as e:
-            logger.error(f"{e} openai_response:{formatted_response}")
+            logger.error(f"Recipe creation failed {e['message']}")
             raise RecipeCreationException()
 
     async def save_recipes(self, recipes: Union[Recipe, List[Recipe]], user: User) -> Union[Recipe, List[Recipe]]:

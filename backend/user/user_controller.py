@@ -1,4 +1,6 @@
 from fastapi import APIRouter, Depends, Query
+
+from authentication.authentication_models import AuthenticationToken
 from authentication.authentication_service import AuthenticationService
 from user.user_models import RegisterUserParams
 
@@ -18,7 +20,7 @@ async def register(params: RegisterUserParams):
 
 
 @router.post("/login")
-async def login(params: RegisterUserParams):
+async def login(params: RegisterUserParams)->AuthenticationToken:
     """
     Authenticates an user
     """

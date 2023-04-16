@@ -1,10 +1,13 @@
 from typing import Optional
-from odmantic import EmbeddedModel, Model, Field
+from odmantic import EmbeddedModel, Model, Field, query, ObjectId
 from pydantic import BaseModel
 from datetime import datetime
 
 
 class PublicUser(BaseModel):
+    # User Id
+    id: Optional[ObjectId] = None
+
     # User email
     email: str
 
@@ -17,6 +20,7 @@ class PublicUser(BaseModel):
     is_deleted: bool = False
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
+
 
 class User(Model):
     # User email
@@ -45,7 +49,6 @@ class User(Model):
     class Config:
         collection = "users"
         parse_doc_with_default_factories = True
-
 
 
 class RegisterUserParams(BaseModel):

@@ -1,9 +1,10 @@
 from typing import List, Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
 from enum import Enum
-from odmantic import EmbeddedModel, Model, Field
+from odmantic import EmbeddedModel, Model, Field, ObjectId
 from datetime import datetime
-
+from urllib.parse import urlparse
+import validators
 
 class SupportedLanguages(str, Enum):
     spanish = "Spanish"
@@ -39,9 +40,9 @@ class Recipe(Model):
     name: str
 
     # Linked user to recipe
-    user_id: Optional[str] = None
+    user_id: Optional[ObjectId] = None
 
-    # Breif deswcription of recipe
+    # Brief description of recipe
     description: Optional[str] = None
 
     # List of ingredients
@@ -56,6 +57,18 @@ class Recipe(Model):
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
     is_deleted: Optional[bool] = False
+
+    # If image is from an invalid url return None
+    @validator("image")
+    def validate_image(cls, image):
+        if image:
+            validation = validators.url(image)
+            if validation:
+                return image
+            else:
+                return None
+
+        return image
 
     class Config:
         collection = "recipes"
